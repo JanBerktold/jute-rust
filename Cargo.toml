@@ -1,4 +1,6 @@
 [workspace]
 members = [
 	"jute-rust-parser",
+	"jute-rust-codegen",
+	"jute-rust-codegen-test",
 ]

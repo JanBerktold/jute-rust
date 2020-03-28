@@ -2,6 +2,6 @@ mod lexer;
 mod parser;
 mod tokenizer;
 
-pub use lexer::*;
+use lexer::*;
 pub use parser::*;
-pub use tokenizer::*;
+use tokenizer::*;

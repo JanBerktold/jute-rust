@@ -3,7 +3,7 @@ use crate::{LexedToken, Lexer};
 
 use std::result::Result;
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub enum PrimitiveFieldType {
     Boolean,
     Buffer,
@@ -16,7 +16,7 @@ pub enum PrimitiveFieldType {
     Custom(String),
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub enum FieldType {
     Primitive(PrimitiveFieldType),
     Map(PrimitiveFieldType, PrimitiveFieldType),
@@ -173,7 +173,8 @@ impl<'a> Parser<'a> {
             other => {
                 if other.starts_with("vector") {
                     let inner_type = &other[7..(other.len() - 1)];
-                    if let FieldType::Primitive(primitive_type) = self.parse_field_type(inner_type) {
+                    if let FieldType::Primitive(primitive_type) = self.parse_field_type(inner_type)
+                    {
                         return FieldType::Vector(primitive_type);
                     }
                 }
@@ -375,7 +376,9 @@ module org.apache.zookeeper.proto {
                             name: "SetDataResponse".to_string(),
                             fields: vec![Field {
                                 name: "stat".to_string(),
-                                field_type: FieldType::Primitive(PrimitiveFieldType::Custom("org.apache.zookeeper.data.Stat".to_string())),
+                                field_type: FieldType::Primitive(PrimitiveFieldType::Custom(
+                                    "org.apache.zookeeper.data.Stat".to_string(),
+                                )),
                             }],
                         },
                     ],
