@@ -1,17 +1,28 @@
 use std::iter::Peekable;
 use std::str::CharIndices;
 
-struct Token<'a> {
-    text: &'a str,
+pub struct Token<'a> {
+    pub text: &'a str,
 }
 
 pub struct Tokenizer<'a> {
     text: &'a str,
-    iter: &'a mut Peekable<CharIndices<'a>>,
+    iter: Peekable<CharIndices<'a>>,
 }
 
 impl<'a> Tokenizer<'a> {
-    fn next(&mut self) -> Option<Token> {
+    pub fn new(text: &'a str) -> Tokenizer<'a> {
+        Tokenizer {
+            text: text,
+            iter: text.char_indices().peekable(),
+        }
+    }
+}
+
+impl<'a> Iterator for Tokenizer<'a> {
+    type Item = Token<'a>;
+
+    fn next(&mut self) -> Option<Token<'a>> {
         let mut begin: usize = 0;
         let mut end: usize = 0;
 
@@ -65,14 +76,10 @@ mod tests {
     use super::*;
 
     fn test_parse(text: &str, output: Vec<&str>) {
-        let mut tokenizer = Tokenizer {
-            text: text,
-            iter: &mut text.char_indices().peekable(),
-        };
+        let mut tokenizer = Tokenizer::new(text);
 
         for expected in output {
             if let Some(token) = tokenizer.next() {
-                println!("OUTPUT: {}", token.text);
                 assert_eq!(token.text, expected);
             } else {
                 assert!(false)
@@ -94,6 +101,7 @@ mod tests {
         test_parse(&"long cxid;", vec![&"long", &"cxid", &";"])
     }
 
+    #[test]
     fn test_class() {
         let text = "
         class Id {
