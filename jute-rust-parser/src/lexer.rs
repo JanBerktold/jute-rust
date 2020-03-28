@@ -45,7 +45,7 @@ mod tests {
     use super::*;
 
     fn test_parse(text: &str, output: Vec<LexedToken>) {
-        let mut tokenizer = Tokenizer::new(text);
+        let tokenizer = Tokenizer::new(text);
 
         let mut lexer = Lexer {
             tokenizer: tokenizer,
@@ -59,7 +59,7 @@ mod tests {
             }
         }
 
-        if let Some(token) = lexer.next() {
+        if let Some(_token) = lexer.next() {
             assert!(false)
         }
     }
@@ -88,17 +88,20 @@ mod tests {
             ustring scheme;
             ustring id;
         }";
-        test_parse(&text, vec![
-            LexedToken::ClassKeyword,
-            LexedToken::Identifier(&"Id"),
-            LexedToken::LeftBracket,
-            LexedToken::Identifier(&"ustring"),
-            LexedToken::Identifier(&"scheme"),
-            LexedToken::Semicolon,
-            LexedToken::Identifier(&"ustring"),
-            LexedToken::Identifier(&"id"),
-            LexedToken::Semicolon,
-            LexedToken::RightBracket,
-        ])
+        test_parse(
+            &text,
+            vec![
+                LexedToken::ClassKeyword,
+                LexedToken::Identifier(&"Id"),
+                LexedToken::LeftBracket,
+                LexedToken::Identifier(&"ustring"),
+                LexedToken::Identifier(&"scheme"),
+                LexedToken::Semicolon,
+                LexedToken::Identifier(&"ustring"),
+                LexedToken::Identifier(&"id"),
+                LexedToken::Semicolon,
+                LexedToken::RightBracket,
+            ],
+        )
     }
 }

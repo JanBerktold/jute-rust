@@ -23,6 +23,7 @@ impl<'a> Iterator for Tokenizer<'a> {
     type Item = Token<'a>;
 
     fn next(&mut self) -> Option<Token<'a>> {
+        let mut initial_begin_set: bool = false;
         let mut begin: usize = 0;
         let mut end: usize = 0;
 
@@ -59,7 +60,17 @@ impl<'a> Iterator for Tokenizer<'a> {
 
                     begin = *i;
                     end = *i + 1;
+                } else if c == &'>' {
+                    self.iter.next();
+
+                    return Some(Token {
+                        text: &self.text[begin..end + 1],
+                    });
                 } else {
+                    if !initial_begin_set {
+                        initial_begin_set = true;
+                        begin = *i;
+                    }
                     end = *i + 1;
                 }
 
@@ -86,8 +97,8 @@ mod tests {
             }
         }
 
-        if let Some(token) = tokenizer.next() {
-            assert!(false)
+        if let Some(_token) = tokenizer.next() {
+            assert!(false);
         }
     }
 
@@ -114,5 +125,11 @@ mod tests {
                 &"class", &"Id", &"{", &"ustring", &"scheme", &";", &"ustring", &"id", &";", &"}",
             ],
         )
+    }
+
+    #[test]
+    fn test_generic_without_spaces() {
+        let text = "vector<ustring>dataWatches;";
+        test_parse(&text, vec![&"vector<ustring>", &"dataWatches", &";"])
     }
 }
